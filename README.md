@@ -8,6 +8,11 @@ TicketSystem，簡易訂票系統實作。
 
 <b>關鍵字:</b> Race condition、系統架構分層(邏輯層/資料層)、單元測試
 
+### Start
+```
+使用Visual Studio 2022 開啟./TicketSystem/TicketSystem.sln，後即可運行
+```
+### API
 ```
 POST
 ​/Ticket​/OrderTicket
