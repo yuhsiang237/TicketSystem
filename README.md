@@ -1,4 +1,6 @@
 # TicketSystem
+![example workflow](https://github.com/yuhsiang237/TicketSystem/actions/workflows/dotnet.yml/badge.svg)
+
 TicketSystem，簡易訂票系統實作。  
 該服務提供三支API，並且實作簡易訂票系統，並以C# lock鎖避免race condition(競爭條件)，確保大量訂票不會遇到資料重複存取問題。  
 並且於測試案例中採用了80000人同時非同步購買同一張票的情況，結果為正常訂票，未有多售出之問題。
