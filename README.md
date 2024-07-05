@@ -37,7 +37,7 @@ rsp:
   {
     "ticketNumber": "T-3",
   }...
-}
+]
 ```
 ```
 POST
@@ -58,5 +58,5 @@ rsp:
     "ticketNumber": "T-3",
     "isPurchase": false
   }...
-}
+]
 ```
