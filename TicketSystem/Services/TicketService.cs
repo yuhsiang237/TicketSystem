@@ -1,18 +1,24 @@
-﻿using TicketSystem.Models;
+using TicketSystem.Models;
 using TicketSystem.Services._Interfaces;
 
 namespace TicketSystem.Services
 {
+    /// <inheritdoc/>
     public class TicketService : ITicketService
     {
         private static Dictionary<string, TicketModel>? _tickets = null;
-        private static readonly object _lockTicket = new object();
 
+        private Dictionary<string, object> _ticketlocks = new Dictionary<string, object>();
+
+        /// <summary>
+        /// constructor
+        /// </summary>
         public TicketService()
         {
             InitTicket();
         }
 
+        /// <inheritdoc/>
         public async Task<List<RspGetAllTicket>> GetAllTicket()
         {
             var result = new List<RspGetAllTicket>();
@@ -28,6 +34,7 @@ namespace TicketSystem.Services
             return await Task.FromResult(result);
         }
 
+        /// <inheritdoc/>
         public async Task<List<RspGetUnPurchasedTicket>> GetUnPurchasedTicket()
         {
             var result = new List<RspGetUnPurchasedTicket>();
@@ -45,11 +52,21 @@ namespace TicketSystem.Services
             return await Task.FromResult(result);
         }
 
+        /// <inheritdoc/>
         public async Task<RspOrderTicket> OrderTicket(ReqOrderTicket req)
         {
             var now = DateTime.Now;
             var result = new RspOrderTicket { };
-            lock (_lockTicket)
+
+            // 獲取票號對應的鎖
+            object ticketLock;
+            if (!_ticketlocks.TryGetValue(req.TicketNumber, out ticketLock))
+            {
+                throw new ArgumentException($"Ticket number {req.TicketNumber} not found.");
+            }
+
+            // 使用細顆粒的票鎖來避免競爭
+            lock (ticketLock)
             {
                 if (_tickets.TryGetValue(req.TicketNumber, out TicketModel ticket))
                 {
@@ -103,6 +120,12 @@ namespace TicketSystem.Services
                         TicketNumber = $"T-{i}",
                         PurchaseDate = null
                     });
+                }
+
+                // 初始化每個票號對應的鎖
+                foreach (var ticketNumber in _tickets.Keys)
+                {
+                    _ticketlocks.Add(ticketNumber, new object());
                 }
             }
         }
